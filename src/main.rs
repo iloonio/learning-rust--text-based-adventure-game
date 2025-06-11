@@ -10,8 +10,8 @@ use game::{build_world, GameState, clear_screen};
 fn main() {
     let mut game = GameState {
         rooms: build_world(),
-        current_location: 1,     // Start in room 1
-        previous_location: None, // No previous location at the start
+        current_location: 1,            // Start in room 1
+        previous_location: Vec::new(),  // No previous location at the start
     };
 
     let commands = register_commands();

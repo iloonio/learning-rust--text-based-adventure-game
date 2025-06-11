@@ -5,7 +5,7 @@ use crossterm::{execute, terminal::{Clear, ClearType}};
 
 /// Represents a room in the game world
 pub struct Room {
-    pub id: u32,
+    //pub id: u32,
     pub name: String,
     pub description: String,
     pub exits: HashMap<String, u32>, // direction -> room id
@@ -15,7 +15,7 @@ pub struct Room {
 pub struct GameState {
     pub rooms: HashMap<u32, Room>,
     pub current_location: u32,
-    pub previous_location: Option<u32>,
+    pub previous_location: Vec<u32>,
 }
 
 /// Clears the terminal screen using Crossterm
@@ -28,7 +28,6 @@ pub fn build_world() -> HashMap<u32, Room> {
     let mut rooms = HashMap::new();
     for id in 1..=7 {
         rooms.insert(id, Room {
-            id,
             name: format!("Room {}", id),
             description: format!("This is room number {}.", id),
             exits: HashMap::new(),
