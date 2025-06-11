@@ -1,0 +1,5 @@
+//id, name, desc, exits{dir: n, ...}
+
+1, Entrance Hall, A dusty room leading to a dark corridor., {north: 2, east: 3}
+2, Dark Corridor, A long, dark corridor., south: 1
+3, Small Room, A very small room., west: 1 
