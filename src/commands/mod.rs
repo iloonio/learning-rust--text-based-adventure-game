@@ -1,15 +1,16 @@
 pub mod look;
 pub mod go;
 pub mod quit;
-
-use std::collections::HashMap;
-use crate::game::GameState;
+pub mod help;
 
 // re-export command implementations
 use look::LookCommand;
 use go::GoCommand;
 use quit::QuitCommand;
+use help::HelpCommand;
 
+use std::collections::HashMap;
+use crate::game::GameState;
 
 pub trait Command {
     fn name(&self) -> &'static str;
@@ -26,6 +27,7 @@ pub fn register_commands() -> CommandMap {
         Box::new(LookCommand),
         Box::new(GoCommand),
         Box::new(QuitCommand),
+        Box::new(HelpCommand),
     ];
 
     for cmd in core {
