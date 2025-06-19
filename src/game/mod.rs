@@ -1,5 +1,10 @@
+pub mod item;
+pub mod npc;
 
-use std::collections::HashMap;
+use item::*;
+use npc::*;
+
+use std::{collections::HashMap};
 use std::io;
 use crossterm::{execute, terminal::{Clear, ClearType}};
 
@@ -16,6 +21,7 @@ pub struct GameState {
     pub rooms: HashMap<u32, Room>,
     pub current_location: u32,
     pub previous_location: Vec<u32>,
+    pub inventory: HashMap<String, Item>,
 }
 
 /// Clears the terminal screen using Crossterm
@@ -49,3 +55,4 @@ pub fn build_world() -> HashMap<u32, Room> {
     }
     rooms
 }
+
