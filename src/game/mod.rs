@@ -1,5 +1,4 @@
 pub mod item;
-pub mod npc;
 pub mod room;
 pub mod monster;
 
@@ -63,10 +62,9 @@ pub fn build_world() -> HashMap<u32, Room> {
         name: "Goblin".to_string(),
         description: "A small, green-skinned creature with a mischievous grin.".to_string(),
         items: HashMap::new(),
-        conditions: HashMap::new(),
-        hp: 10,
-        max_hp: 10,
-        attack: 3,
+        hp: 16,
+        max_hp: 16,
+        attack: 4,
     };
     goblin.items.insert("herb".to_string(), Item::new(
         "herb",
