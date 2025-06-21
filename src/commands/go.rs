@@ -1,6 +1,6 @@
 use super::Command;
 use super::look::LookCommand;
-use crate::game::{GameState, clear_screen};
+use crate::game::{clear_screen, GameMode, GameState};
 
 // Go command changes the player's location
 pub struct GoCommand;
@@ -10,10 +10,16 @@ impl Command for GoCommand {
     }
 
     fn execute(&self, args: &[&str], game: &mut GameState) {
+        if let GameMode::InCombat = game.mode {
+            println!("You cannot move freely while in combat! use flee to escape back to the previous location.");
+            return;
+        }
+
         if args.is_empty() {
             println!("Go where?");
             return;
         }
+
         let dir = args[0].to_lowercase();
 
         if dir == "back" {  
@@ -38,6 +44,20 @@ impl Command for GoCommand {
             LookCommand.execute(&[], game); //describe the new room
         } else {
             println!("You can't go {} from here.", dir);
+        }
+
+        let room = &game.rooms[&game.current_location];
+        if !room.monsters.is_empty() {
+            game.mode = GameMode::InCombat;
+            game.combat_turn = Some(crate::game::CombatTurn::Player);
+            print!("A ");
+            for (i, monster) in room.monsters.iter().enumerate() {
+                if i > 0 {
+                    print!(" and ");
+                }
+                print!("{}", monster.name);
+            }
+            println!(" appears! Prepare for combat!");
         }
     }
 }

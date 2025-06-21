@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 use crate::game::item::Item;
 
-struct Npc{
+pub struct Monster {
     pub name: String,
     pub description: String,
     pub items: HashMap<String, Item>,
     pub conditions: HashMap<String, bool>,
     pub hp: i32,
     pub max_hp: i32,
-    pub attack: u32, // NPC's attack power
+    pub attack: u32,
 }

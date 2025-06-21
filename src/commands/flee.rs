@@ -1,0 +1,1 @@
+//combat command that can only be used when the player is in combat mode. It allows the player to flee from combat, which will return them to the previous room and reset the game mode to out of combat. it has a 50% chance of success.

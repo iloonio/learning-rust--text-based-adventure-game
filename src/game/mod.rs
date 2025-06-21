@@ -1,19 +1,29 @@
 pub mod item;
 pub mod npc;
+pub mod room;
+pub mod monster;
 
 use item::*;
-use npc::*;
+//use npc::*;
+use room::*;
 
 use std::{collections::HashMap};
 use std::io;
 use crossterm::{execute, terminal::{Clear, ClearType}};
 
-/// Represents a room in the game world
-pub struct Room {
-    //pub id: u32,
-    pub name: String,
-    pub description: String,
-    pub exits: HashMap<String, u32>, // direction -> room id
+use crate::game::monster::Monster;
+
+
+pub enum GameMode {
+    OutOfCombat,
+    InCombat,
+    GameOver,
+}
+
+#[derive(PartialEq)]
+pub enum CombatTurn {
+    Player,
+    Monster,
 }
 
 /// Holds the full game state, including rooms and player location history
@@ -21,7 +31,13 @@ pub struct GameState {
     pub rooms: HashMap<u32, Room>,
     pub current_location: u32,
     pub previous_location: Vec<u32>,
-    pub inventory: HashMap<String, Item>,
+    pub inventory: HashMap<String, Vec<Item>>,
+    pub conditions: HashMap<String, bool>,
+    pub hp: i32,
+    pub max_hp: i32,
+    pub mode: GameMode,
+    pub combat_turn: Option<CombatTurn>, // Current turn in combat, if applicable
+    pub attack: u32, // Player's attack power
 }
 
 /// Clears the terminal screen using Crossterm
@@ -37,8 +53,27 @@ pub fn build_world() -> HashMap<u32, Room> {
             name: format!("Room {}", id),
             description: format!("This is room number {}.", id),
             exits: HashMap::new(),
+            items: HashMap::new(),
+            dark: id == 4 || id == 6, // Rooms 4 and 6 are dark
+            monsters: Vec::new(),
         });
     }
+
+    let mut goblin = Monster {
+        name: "Goblin".to_string(),
+        description: "A small, green-skinned creature with a mischievous grin.".to_string(),
+        items: HashMap::new(),
+        conditions: HashMap::new(),
+        hp: 10,
+        max_hp: 10,
+        attack: 3,
+    };
+    goblin.items.insert("herb".to_string(), Item::new(
+        "herb",
+        "A healing herb that restores health when used.",
+        "Herb"
+    ));
+    rooms.get_mut(&5).unwrap().monsters.push(goblin);
 
     // Bidirectional connections
     for &(from, dir, to) in &[
@@ -53,6 +88,24 @@ pub fn build_world() -> HashMap<u32, Room> {
             room.exits.insert(dir.to_string(), to);
         }
     }
+
+    let torch = Item::new("torch", "A wooden torch that can be lit to provide light.", "Torch");
+
+    rooms.get_mut(&2).unwrap().add_item(torch);
+
+    rooms.get_mut(&3).unwrap().add_item(
+        Item::new("herb", 
+        "A healing herb that restores health when used.", 
+        "Herb"
+        )
+    );
+        rooms.get_mut(&1).unwrap().add_item(
+        Item::new("herb", 
+        "A healing herb that restores health when used.", 
+        "Herb"
+        )
+    );
+
     rooms
 }
 
